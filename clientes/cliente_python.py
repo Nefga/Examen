@@ -5,12 +5,12 @@ import threading
 import json
 from datetime import datetime
 
-MAX_LDR = 50   # debe coincidir con LUX_BRILLANTE del sketch (el ESP32 nunca reporta más que esto)
-UMBRAL_ALARMA = 15   # debe coincidir con UMBRAL_LUX del sketch
+MAX_LDR = 50   
+UMBRAL_ALARMA = 15   
 
-# Colores del medidor (mismo concepto que la página web: noche -> día)
-COLOR_NOCHE = (74, 111, 165)   # #4A6FA5
-COLOR_DIA = (244, 184, 96)     # #F4B860
+
+COLOR_NOCHE = (74, 111, 165)   
+COLOR_DIA = (244, 184, 96)     
 
 
 def interpolar_color(pct):
@@ -46,7 +46,6 @@ class BarraNivel(tk.Canvas):
         self.create_rectangle(track_x0, track_y0, track_x1, track_y1,
                                fill="#131b2e", outline="")
 
-        # Relleno proporcional, coloreado según el nivel (noche -> día)
         pct = valor / MAX_LDR
         fill_h = round(track_h * pct)
         if fill_h > 0:
