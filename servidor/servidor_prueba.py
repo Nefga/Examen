@@ -26,12 +26,9 @@ class ServidorEcosistema:
     def conectar_arduino(self):
         try:
             self.ser = serial.Serial(self.puerto_serial, 9600, timeout=1)
-            time.sleep(2)  # Esperar a que el ESP32 se reinicie
+            time.sleep(2)  
 
-            # El ESP32 se reinicia solo al abrir el puerto (DTR/RTS del
-            # conversor USB) y manda mensajes de arranque del bootloader
-            # antes de que tu sketch empiece a correr. Los descartamos
-            # para que no se confundan con datos válidos.
+         
             n = 0
             while n < 11:
                 try:
@@ -77,8 +74,7 @@ class ServidorEcosistema:
                         else:
                             print(f"📊 Lux: {lux:.1f}")
 
-                        # El ESP32 ya decide el estado real (automático o manual);
-                        # aquí solo detectamos si cambió para registrarlo en la BD.
+                     
                         if estado_reportado is not None and estado_reportado != self.estado_buzzer:
                             self.estado_buzzer = estado_reportado
                             self.estado_led = estado_reportado
@@ -91,9 +87,7 @@ class ServidorEcosistema:
                                     origen="ESP32"
                                 )
 
-                        # Transmitir cada lectura (no solo cuando cambia el estado):
-                        # así las gráficas / medidores en tiempo real reciben datos
-                        # continuos en vez de solo cuando se activa o desactiva la alarma.
+                   
                         self.broadcast_estado()
                 time.sleep(0.1)
             except Exception as e:
@@ -150,7 +144,6 @@ class ServidorEcosistema:
                     self.estado_buzzer = es_on
                     self.estado_led = es_on
                     
-                    # Enviar al Arduino/ESP32 (el mismo texto que el sketch espera)
                     if self.enviar_a_arduino(comando):
                         with self.db_lock:
                             self.db.registrar_evento(
