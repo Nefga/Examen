@@ -4,14 +4,13 @@ import json
 
 class Database:
     def __init__(self, db_name="ecosistema.db"):
-        # check_same_thread=False: el servidor lee del Arduino en un hilo
-        # y atiende clientes en otros hilos, todos usando esta misma conexión.
+       
         self.conn = sqlite3.connect(db_name, check_same_thread=False)
         self.cursor = self.conn.cursor()
         self.crear_tablas()
 
     def crear_tablas(self):
-        # Tabla de eventos (comandos y lecturas)
+       
         self.cursor.execute('''
             CREATE TABLE IF NOT EXISTS eventos (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -25,7 +24,7 @@ class Database:
             )
         ''')
 
-        # Tabla de lecturas del sensor (para gráficas históricas)
+       
         self.cursor.execute('''
             CREATE TABLE IF NOT EXISTS lecturas (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -34,7 +33,6 @@ class Database:
             )
         ''')
 
-        # Tabla de configuración
         self.cursor.execute('''
             CREATE TABLE IF NOT EXISTS configuracion (
                 clave TEXT PRIMARY KEY,
