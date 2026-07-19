@@ -1,0 +1,261 @@
+/* ============================================================
+   Ecosistema — panel de monitoreo
+   Concepto: medidor de luz "día / noche" (el LDR es el corazón
+   del sistema, así que el color y la barra siempre hablan de luz).
+   ============================================================ */
+
+:root {
+  --bg: #0b1120;
+  --card: #131b2e;
+  --card-border: #22304a;
+  --text: #e7ecf5;
+  --text-muted: #8695b0;
+
+  --night: #4a6fa5;
+  --day: #f4b860;
+  --safe: #6fcf97;
+  --alarm: #e8735c;
+
+  --font-display: "Fraunces", "Georgia", serif;
+  --font-mono: "IBM Plex Mono", "Courier New", monospace;
+  --font-body: "Inter", -apple-system, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background: radial-gradient(ellipse at top, #16213a 0%, var(--bg) 60%);
+  color: var(--text);
+  font-family: var(--font-body);
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  padding: 48px 20px;
+}
+
+h2 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.9rem;
+  margin: 0 0 4px 0;
+  letter-spacing: 0.01em;
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 18px;
+  display: block;
+}
+
+.panel {
+  width: 100%;
+  max-width: 720px;
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 18px;
+  padding: 32px 36px 28px;
+  box-shadow: 0 30px 60px -20px rgba(0,0,0,0.6);
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 32px;
+  margin-top: 20px;
+}
+
+/* ---------- El medidor de luz (elemento firma) ---------- */
+
+.medidor-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.medidor-track {
+  position: relative;
+  width: 46px;
+  height: 320px;
+  border-radius: 23px;
+  background: linear-gradient(to top, #0d1420 0%, #1a2338 100%);
+  border: 1px solid var(--card-border);
+  overflow: hidden;
+}
+
+.medidor-fill {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 0%;
+  background-image: linear-gradient(to top, var(--night) 0%, #8aa8c9 55%, var(--day) 100%);
+  background-size: 100% 320px;
+  background-position: bottom;
+  background-repeat: no-repeat;
+  transition: height 0.4s ease;
+}
+
+.medidor-umbral {
+  position: absolute;
+  left: -3px;
+  right: -3px;
+  height: 2px;
+  background: var(--alarm);
+  opacity: 0.6;
+}
+
+.medidor-marcador {
+  position: absolute;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 12px 3px rgba(255,255,255,0.55);
+  transform: translate(-50%, 50%);
+  transition: bottom 0.4s ease;
+  bottom: 0%;
+}
+
+.medidor-label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.medidor-valor {
+  font-family: var(--font-mono);
+  font-size: 1.4rem;
+  color: var(--text);
+}
+
+/* ---------- Estado y controles ---------- */
+
+.estado-fila {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.pill {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--card-border);
+  color: var(--text-muted);
+}
+
+.pill.conectado { color: var(--safe); border-color: var(--safe); }
+.pill.desconectado { color: var(--alarm); border-color: var(--alarm); }
+
+.metrica {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--card-border);
+}
+
+.metrica:last-of-type { border-bottom: none; }
+
+.metrica .nombre { color: var(--text-muted); font-size: 0.85rem; }
+.metrica .dato {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+}
+
+.dato.on { color: var(--safe); }
+.dato.off { color: var(--alarm); }
+
+.controles {
+  margin-top: 22px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.button {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 11px 18px;
+  border-radius: 10px;
+  border: 1px solid var(--card-border);
+  background: #1a2338;
+  color: var(--text);
+  cursor: pointer;
+  transition: transform 0.12s ease, border-color 0.12s ease;
+}
+
+.button:hover { border-color: var(--day); transform: translateY(-1px); }
+.button:active { transform: translateY(1px); }
+
+.button1.encender { border-color: var(--safe); color: var(--safe); }
+.button1.apagar { border-color: var(--alarm); color: var(--alarm); }
+
+.comando-fila {
+  margin-top: 16px;
+  display: flex;
+  gap: 10px;
+}
+
+#txt_comando {
+  flex: 1;
+  background: #0d1420;
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+}
+
+#txt_comando:focus {
+  outline: none;
+  border-color: var(--day);
+}
+
+/* ---------- Bitácora ---------- */
+
+.bitacora-titulo {
+  margin-top: 26px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+#div_log {
+  margin-top: 8px;
+  height: 150px;
+  overflow-y: auto;
+  background: #0a0f1c;
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: #a9b8cf;
+}
+
+#div_log div { padding: 2px 0; }
+
+@media (max-width: 560px) {
+  .layout { grid-template-columns: 1fr; }
+  .medidor-wrap { flex-direction: row; }
+  .medidor-track { width: 320px; height: 46px; }
+}

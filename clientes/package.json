@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json.schemastore.org/package.json",
+  "name": "server_SocketIO_y_TCP_2",
+  "version": "1.0.0",
+  "description": "Cliente web para el ecosistema de monitoreo",
+  "main": "cliente_web.js",
+  "scripts": {
+    "start": "nodemon cliente_web.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.3",
+    "nodemon": "^2.0.16",
+    "socket.io": "^1.7.2"
+  }
+}
