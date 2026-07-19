@@ -4,7 +4,6 @@ Sistema de instrumentación virtual que lee un sensor de luz (LDR) conectado a u
 ESP32, calcula lux reales, y expone el estado (luz, buzzer, LED) a tres clientes
 distintos (Java, Python y Web) a través de un servidor central en Python.
 
-Repositorio: https://github.com/Nefga/Examen/tree/main
 
 ## Arquitectura
 
