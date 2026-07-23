@@ -1,70 +1,60 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-    <meta charset="UTF-8">
-    <title>Ecosistema — Panel de Monitoreo</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <script type="text/javascript" src="socket.io/socket.io.js"></script>
-    <script type="text/javascript" src="index.js" defer></script>
-    <link rel="stylesheet" type="text/css" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Monitoreo y Control del Ecosistema</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="/socket.io/socket.io.js"></script>
+  <script defer src="index.js"></script>
 </head>
-
 <body>
-    <div class="panel">
-        <span class="eyebrow">Instrumentación Virtual</span>
-        <h2>Ecosistema</h2>
-        <p style="color: var(--text-muted); margin: 0; font-size: 0.9rem;">
-            Monitoreo y control del sensor de luz (LDR)
-        </p>
+  <main class="contenedor">
+    <header>
+      <div>
+        <p class="eyebrow">Instrumentación Virtual</p>
+        <h1>Monitoreo y control del ecosistema</h1>
+      </div>
+      <span id="conexion" class="estado desconectado">Desconectado</span>
+    </header>
 
-        <div class="layout">
-            <!-- Medidor de luz: elemento central -->
-            <div class="medidor-wrap">
-                <div class="medidor-track">
-                    <div class="medidor-fill" id="medidor_fill"></div>
-                    <div class="medidor-umbral" id="medidor_umbral"></div>
-                    <div class="medidor-marcador" id="medidor_marcador"></div>
-                </div>
-                <div class="medidor-valor" id="div_ldr_valor">--</div>
-                <div class="medidor-label">Nivel de luz (lux)</div>
-            </div>
-
-            <div>
-                <div class="estado-fila">
-                    <span class="pill desconectado" id="pill_conexion">● Desconectado</span>
-                </div>
-
-                <div class="metrica">
-                    <span class="nombre">Buzzer</span>
-                    <span class="dato off" id="div_buzzer">APAGADO</span>
-                </div>
-                <div class="metrica">
-                    <span class="nombre">LED</span>
-                    <span class="dato off" id="div_led">APAGADO</span>
-                </div>
-                <div class="metrica">
-                    <span class="nombre">Umbral de alarma</span>
-                    <span class="dato">&lt; 15 lux</span>
-                </div>
-
-                <div class="controles">
-                    <input type="button" class="button button1 encender" value="Activar alarma" onclick="encender()">
-                    <input type="button" class="button button1 apagar" value="Desactivar alarma" onclick="apagar()">
-                    <input type="button" class="button" value="↺ Modo automático" onclick="reiniciarAuto()">
-                </div>
-
-                <div class="comando-fila">
-                    <input type="text" id="txt_comando" placeholder="comando personalizado...">
-                    <input type="button" class="button" value="Enviar" onclick="enviar_comando()">
-                </div>
-            </div>
+    <section class="panel principal">
+      <div class="medidor">
+        <div class="barra-fondo">
+          <div id="barraLuz" class="barra-luz"></div>
+          <div class="linea-umbral" title="Umbral: 15 lux"></div>
         </div>
+        <strong id="valorLux">0.0 lux</strong>
+        <small>Umbral de alarma: 15 lux</small>
+      </div>
 
-        <div class="bitacora-titulo">Bitácora de eventos</div>
-        <div id="div_log"></div>
-    </div>
+      <div class="metricas">
+        <article><span>LDR</span><strong id="ldr">0.0 lux</strong></article>
+        <article><span>ADC</span><strong id="adc">0</strong></article>
+        <article><span>Buzzer</span><strong id="buzzer">APAGADO</strong></article>
+        <article><span>LED</span><strong id="led">APAGADO</strong></article>
+        <article><span>Modo</span><strong id="modo">AUTO</strong></article>
+        <article><span>Última lectura</span><strong id="hora">--:--:--</strong></article>
+      </div>
+    </section>
+
+    <section class="panel controles">
+      <h2>Control de actuadores</h2>
+      <div class="botones">
+        <button class="encender" onclick="enviarComando('BUZZER_ON')">Activar alarma</button>
+        <button class="apagar" onclick="enviarComando('BUZZER_OFF')">Desactivar alarma</button>
+        <button class="auto" onclick="enviarComando('AUTO')">Modo automático</button>
+      </div>
+      <div class="comando-libre">
+        <input id="txtComando" placeholder="BUZZER_ON, BUZZER_OFF o AUTO">
+        <button onclick="enviarComandoLibre()">Enviar</button>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Historial</h2>
+      <pre id="log"></pre>
+    </section>
+  </main>
 </body>
-
 </html>
